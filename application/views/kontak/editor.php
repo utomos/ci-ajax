@@ -1,3 +1,4 @@
+<div id="pesan-modal"></div>
 <input type="hidden" name="mode" value="<?php echo $mode; ?>"/>
 <input type="hidden" name="kontak_id" value="<?php echo (isset($show)) ? $show['kontak_id'] : ''; ?>"/>
 <div class="form-group">

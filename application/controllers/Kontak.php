@@ -10,8 +10,12 @@ class Kontak extends CI_Controller {
     }
 
     public function index() {
+        $this->load->view('kontak/index');
+    }
+
+    public function show() {
         $data['show'] = $this->m_kontak->show();
-        $this->load->view('kontak/index', $data);
+        $this->load->view('kontak/show', $data);
     }
 
     public function editor($mode, $id = null) {
@@ -34,6 +38,8 @@ class Kontak extends CI_Controller {
         }
 
         $this->load->library('form_validation');
+        $this->form_validation->set_error_delimiters('<div class="alert alert-danger fade in"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>', '</div>');
+
         if ($this->input->post('mode') == 'edit') {
             $this->form_validation->set_rules('kontak_id', 'Nama Barang', 'required');
         }

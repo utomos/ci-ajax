@@ -19,40 +19,13 @@
         <div class="container">
 
             <h1>Hello, world!</h1>
+
             <button type="button" class="btn btn-primary btn-lg" onclick="modal('add', '')">
                 Tambah
             </button>
             <br/><br/>
-
-            <table class="table table-hover table-bordered">
-                <thead>
-                    <tr>
-                        <th width="5%">No</th>
-                        <th>Nama</th>
-                        <th>Phone</th>
-                        <th width="15%">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (count($show) > 0) { ?>
-                        <?php foreach ($show as $index => $row) { ?>
-                            <tr>
-                                <td><?php echo $index + 1; ?></td>
-                                <td><?php echo $row['kontak_nama']; ?></td>
-                                <td><?php echo $row['kontak_phone']; ?></td>
-                                <td class="text-center">
-                                    <button onclick="modal('edit', '<?php echo $row['kontak_id']; ?>')" class="btn btn-sm btn-warning">Edit</button>
-                                    <button onclick="delete_data('<?php echo $row['kontak_id']; ?>')" class="btn btn-sm btn-danger">Delete</button>
-                                </td>
-                            </tr>
-                        <?php } ?>
-                    <?php } else { ?>
-                        <tr>
-                            <td colspan="4">*Data masih kosong</td>
-                        </tr>
-                    <?php } ?>
-                </tbody>
-            </table>
+            <div id="pesan-alert"></div>
+            <div id="show-table"></div>
         </div>
 
         <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -75,6 +48,13 @@
             </div>
         </div>
         <script type="text/javascript">
+            function load_table() {
+                $('#show-table').html('<p>Loading load content ... </p>');
+                setTimeout(function () {
+                    $('#show-table').load('<?php echo base_url('kontak/show'); ?>');
+                }, 500);
+            }
+
             function modal(mode, param) {
                 $('#myModal').modal('toggle');
                 $('#myModal .modal-body').html('<p>Loading load content ... </p>');
@@ -82,6 +62,7 @@
                     $('#myModal .modal-body').load('<?php echo base_url('kontak/editor'); ?>' + '/' + mode + '/' + param);
                 }, 500);
             }
+
             function delete_data(param) {
                 $.ajax({
                     url: "<?php echo base_url('kontak/delete'); ?>",
@@ -105,6 +86,8 @@
             }
 
             $(document).ready(function () {
+                load_table();
+                $('#pesan-alert').html('');
                 $('#form-modal').submit(function () {
                     var form = '#form-modal';
                     var modal = '#myModal';
@@ -119,11 +102,13 @@
                             {
                                 $(modal).modal('toggle');
                                 $(form)[0].reset();
-                                alert(data.pesan);
+                                /* Keluar tulisan error di index */
+                                $('#pesan-alert').html('<p class="text-success lead">' + data.pesan + '</p>');
                             } else {
-                                alert(data.pesan);
+                                /* Keluar tulisan error di modal */
+                                $('#pesan-modal').html(data.pesan);
                             }
-                            window.location.href = '<?php echo base_url('kontak'); ?>';
+                            load_table();
                         },
                         error: function (jqXHR, textStatus, errorThrown) {
                             alert('Terjadi kesalahan saat menghubungkan ke server.');
